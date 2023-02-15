@@ -77,9 +77,11 @@ fun FridgeTrackerApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val contextForToast = LocalContext.current.applicationContext
+
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
+
     val items = listOf(
         MinFabItem(
             icon = ImageVector.vectorResource(id = R.drawable.ic_camera),
@@ -101,6 +103,9 @@ fun FridgeTrackerApp() {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
                 }
+
+                // show a toast message when the drawer is opened (when user is toggling it)
+                Toast.makeText(contextForToast, "Drawer opened", Toast.LENGTH_SHORT).show() 
             }
         },
         bottomBar = {
@@ -188,7 +193,7 @@ fun FAB(
 
     val fabScale by transition.animateFloat(label = "FabScale") {
         if(it == MultiFloatingState.Expanded) 36f else 0f
-    }
+    } 
     
     val alpha by transition.animateFloat(
         label = "alpha",
