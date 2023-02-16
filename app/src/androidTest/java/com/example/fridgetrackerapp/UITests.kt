@@ -51,8 +51,9 @@ class UITests {
                 FridgeTrackerApp()
             }
         }
-        composeTestRule.onNodeWithContentDescription("Add").performClick()
-        composeTestRule.onNodeWithTag("minis").assertExists()
+        composeTestRule.onNodeWithContentDescription("FAB").performClick()
+        composeTestRule.onNodeWithContentDescription("Enter Manually").assertExists()
+        composeTestRule.onNodeWithContentDescription("Scan Barcode").assertExists()
     }
 
     @Test
@@ -62,8 +63,10 @@ class UITests {
                 FridgeTrackerApp()
             }
         }
-        composeTestRule.onNodeWithContentDescription("Add").performClick()
-        composeTestRule.onNodeWithTag("minis").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("FAB").performClick()
+        composeTestRule.onNodeWithContentDescription("FAB").performClick()
+        composeTestRule.onNodeWithContentDescription("Enter Manually").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Scan Barcode").assertDoesNotExist()
     }
 
     @Test
