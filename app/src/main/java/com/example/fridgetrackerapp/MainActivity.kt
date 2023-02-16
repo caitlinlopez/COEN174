@@ -26,15 +26,21 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.fridgetrackerapp.ui.theme.FridgeTrackerAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -65,7 +71,7 @@ enum class MultiFloatingState {
 }
 
 class MinFabItem(
-    val icon: ImageVector,
+    val icon: ImageBitmap,
     val label: String,
     val identifier: String
 )
@@ -82,12 +88,12 @@ fun FridgeTrackerApp() {
     }
     val items = listOf(
         MinFabItem(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_camera),
+            icon = ImageBitmap.imageResource(id = R.drawable.icon_camera),
             label = "Camera",
             identifier = "CameraFAB"
         ),
         MinFabItem(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_pencil),
+            icon = ImageBitmap.imageResource(id = R.drawable.icon_pencil),
             label = "Pen",
             identifier = "PenFAB"
         ),
@@ -123,7 +129,6 @@ fun FridgeTrackerApp() {
         },
         drawerGesturesEnabled = true,
     ) {
-
     }
 }
 
@@ -252,7 +257,7 @@ fun MinFAB(
 ) {
     val buttonColor = MaterialTheme.colors.secondary
     val shadow = Color.Black.copy(.5f)
-    val painter = rememberVectorPainter(image = item.icon)
+
     Canvas(
         modifier = Modifier
             .size(32.dp)
@@ -266,7 +271,8 @@ fun MinFAB(
                     radius = 20.dp,
                     color = MaterialTheme.colors.onSurface
                 )
-            ),
+            )
+            .testTag("minis"),
     ) {
         drawCircle(
             color = shadow,
@@ -274,28 +280,8 @@ fun MinFAB(
             center = Offset(
                 center.x + 2f,
                 center.y + 2f,
-            )
+            ),
         )
-
-        drawCircle(
-            color = buttonColor,
-            radius = fabScale
-        )
-
-//        scale(
-//            Offset(
-//                center.x - (item.icon.width / 2),
-//                center.y - (item.icon.width / 2),
-//            )
-//        ) {
-//            with(painter) {
-//                draw(painter.intrinsicSize)
-//            }
-//
-//        }
-
-
-
 
 //        drawImage(
 //            image = item.icon,
@@ -316,12 +302,15 @@ fun BottomBar() {
         mutableStateOf("Home")
     }
 
+    val context = LocalContext.current
+
     BottomNavigation() {
         bottomMenuItemsList.forEach() { menuItem ->
             BottomNavigationItem(
                 selected = (selectedItem == menuItem.label),
                 onClick = {
                     selectedItem = menuItem.label
+                    //Toast.makeText(context, menuItem.label, Toast.LENGTH_LONG).show()
                 },
                 icon = {
                     Icon(
