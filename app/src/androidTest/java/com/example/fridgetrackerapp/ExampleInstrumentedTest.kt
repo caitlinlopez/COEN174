@@ -8,6 +8,11 @@ import org.junit.runner.RunWith
 
 import org.junit.Assert.*
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -22,14 +27,14 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.fridgetrackerapp", appContext.packageName)
     }
-
-    /*
+ 
     @Test
     fun checkToastOpen() {
         // https://developer.android.com/training/testing/espresso/setup => espresso unit testing (interactive components)
         // can't get this to work: onView is not recognized even when we have the espresso dependency
+
+        // works after adding the espresso dependency and the espresso test runner and importing proper packages
         
         onView(withText("Drawer opened")).check(matches(isDisplayed()))
-    }
-    */
+    } 
 }
