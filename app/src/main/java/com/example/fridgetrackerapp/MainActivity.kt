@@ -193,7 +193,7 @@ fun FAB(
 
     val fabScale by transition.animateFloat(label = "FabScale") {
         if(it == MultiFloatingState.Expanded) 36f else 0f
-    } 
+    }   
     
     val alpha by transition.animateFloat(
         label = "alpha",
