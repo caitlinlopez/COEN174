@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -26,15 +27,24 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.fridgetrackerapp.ui.theme.FridgeTrackerAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -59,39 +69,72 @@ fun DefaultPreview() {
     }
 }
 
-enum class MultiFloatingState {
-    Expanded,
-    Collapsed
+sealed class MultiFabState {
+    object Collapsed: MultiFabState()
+    object Expand: MultiFabState()
+
+    fun isExpanded() = this == Expand
+
+    fun toggleValue() = if (isExpanded()) {
+        Collapsed
+    } else {
+        Expand
+    }
 }
 
-class MinFabItem(
-    val icon: ImageVector,
-    val label: String,
-    val identifier: String
+@Composable
+fun rememberMultiFabState() = remember { mutableStateOf<MultiFabState>(MultiFabState.Collapsed) }
+
+data class MultiFabItem(
+    val id: Int,
+    @DrawableRes val iconRes: Int,
+    val label: String = ""
 )
 
+@Immutable
+interface FabOption {
+    @Stable val iconTint: Color
+    @Stable val backgroundTint: Color
+    @Stable val showLabel: Boolean
+}
 
+private class FabOptionImpl(
+    override val iconTint: Color,
+    override val backgroundTint: Color,
+    override val showLabel: Boolean
+) : FabOption
+
+@SuppressLint("ComposableNaming")
+@Composable
+fun FabOption(
+    backgroundTint: Color = MaterialTheme.colors.primary,
+    iconTint: Color = contentColorFor(backgroundColor = backgroundTint),
+    showLabel: Boolean = false
+): FabOption = FabOptionImpl(iconTint, backgroundTint, showLabel)
+
+@Immutable
+interface FabIcon {
+    @Stable
+    val iconRes: Int
+    @Stable val iconRotate: Float?
+}
+
+private class FabIconImpl(
+    override val iconRes: Int,
+    override val iconRotate: Float?
+) : FabIcon
+
+fun FabIcon(@DrawableRes iconRes: Int, iconRotate: Float? = null): FabIcon =
+    FabIconImpl(iconRes, iconRotate)
+
+
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun FridgeTrackerApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val contextForToast = LocalContext.current.applicationContext
-    var multiFloatingState by remember {
-        mutableStateOf(MultiFloatingState.Collapsed)
-    }
-    val items = listOf(
-        MinFabItem(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_camera),
-            label = "Camera",
-            identifier = "CameraFAB"
-        ),
-        MinFabItem(
-            icon = ImageVector.vectorResource(id = R.drawable.ic_pencil),
-            label = "Pen",
-            identifier = "PenFAB"
-        ),
-    )
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -107,12 +150,27 @@ fun FridgeTrackerApp() {
             BottomBar()
         },
         floatingActionButton = {
-            FAB(
-                multiFloatingState = multiFloatingState,
-                onMultiFabStateChange = {
-                    multiFloatingState = it
+            MultiFloatingActionButton(
+                items = listOf(
+                    MultiFabItem(
+                        id = 1,
+                        iconRes = R.drawable.ic_pencil,
+                        label = "Enter Manually"
+                    ),
+                    MultiFabItem(
+                        id = 2,
+                        iconRes = R.drawable.ic_camera,
+                        label = "Scan Barcode"
+                    ),
+                ),
+                fabIcon = FabIcon(iconRes = R.drawable.ic_baseline_add_24, iconRotate = 45f),
+                onFabItemClicked = {
+                    Toast.makeText(contextForToast, it.label, Toast.LENGTH_LONG).show()
                 },
-                items = items
+                fabOption = FabOption(
+                    iconTint = Color.White,
+                    showLabel = true
+                )
             )
         },
         drawerContent = {
@@ -123,7 +181,6 @@ fun FridgeTrackerApp() {
         },
         drawerGesturesEnabled = true,
     ) {
-
     }
 }
 
@@ -174,137 +231,108 @@ fun NavDrawer(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
-fun FAB(
-    multiFloatingState: MultiFloatingState,
-    onMultiFabStateChange: (MultiFloatingState) -> Unit,
-    items: List<MinFabItem>
+fun MultiFloatingActionButton(
+    modifier: Modifier = Modifier,
+    items: List<MultiFabItem>,
+    fabState: MutableState<MultiFabState> = rememberMultiFabState(),
+    fabIcon: FabIcon,
+    fabOption: FabOption = FabOption(),
+    onFabItemClicked: (fabItem: MultiFabItem) -> Unit,
+    stateChanged: (fabState: MultiFabState) -> Unit = {}
 ) {
-    val transition = updateTransition(targetState = multiFloatingState, label = "transition")
-
-    val rotate by transition.animateFloat(label = "rotate") {
-        if (it == MultiFloatingState.Expanded) 315f else 0f
-    }
-
-    val fabScale by transition.animateFloat(label = "FabScale") {
-        if(it == MultiFloatingState.Expanded) 36f else 0f
-    }
-    
-    val alpha by transition.animateFloat(
-        label = "alpha",
-        transitionSpec = { tween(durationMillis = 500) }
-    ) {
-        if(it == MultiFloatingState.Expanded) 1f else 0f
-    }
-
-    val textShadow by transition.animateDp(
-        label = "textShadow",
-        transitionSpec = { tween(durationMillis = 100) }
-    ) {
-        if(it == MultiFloatingState.Expanded) 2.dp else 0.dp
-    }
+    val rotation by animateFloatAsState(
+        if (fabState.value == MultiFabState.Expand) {
+            fabIcon.iconRotate ?: 0f
+        } else {
+            0f
+        }
+    )
 
     Column(
-        horizontalAlignment = Alignment.End,
+        modifier = modifier.wrapContentSize(),
+        horizontalAlignment = Alignment.End
     ) {
-        if (transition.currentState == MultiFloatingState.Expanded) {
-            items.forEach {
-                MinFAB(
-                    item = it,
-                    onMinFabItemClick = {
+        AnimatedVisibility(
+            visible = fabState.value.isExpanded(),
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut()
+        ) {
+            LazyColumn(
+                modifier = Modifier.wrapContentSize(),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(items.size) { index ->
+                    MiniFabItem(
+                        item = items[index],
+                        fabOption = fabOption,
+                        onFabItemClicked = onFabItemClicked
+                    )
+                }
 
-                    },
-                    fabScale = 48f,
-                    alpha = alpha
-                )
-                Spacer(modifier = Modifier.size(16.dp))
+                item {}
             }
         }
+
         FloatingActionButton(
             onClick = {
-                onMultiFabStateChange(
-                    if (transition.currentState == MultiFloatingState.Expanded) {
-                        MultiFloatingState.Collapsed
-                    } else {
-                        MultiFloatingState.Expanded
-                    }
-                )
+                fabState.value = fabState.value.toggleValue()
+                stateChanged(fabState.value)
             },
-            modifier = Modifier.rotate(rotate)
+            backgroundColor = fabOption.backgroundTint,
+            contentColor = fabOption.iconTint
         ) {
             Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add",
-                modifier = Modifier.rotate(rotate)
+                painter = painterResource(id = fabIcon.iconRes),
+                contentDescription = "FAB",
+                modifier = Modifier.rotate(rotation),
+                tint = fabOption.iconTint
             )
         }
     }
 }
 
 @Composable
-fun MinFAB(
-    item: MinFabItem,
-    alpha: Float,
-    //textShadow: Dp,
-    fabScale: Float,
-    showLabel: Boolean = true,
-    onMinFabItemClick: (MinFabItem) -> Unit
+fun MiniFabItem(
+    item: MultiFabItem,
+    fabOption: FabOption,
+    onFabItemClicked: (item: MultiFabItem) -> Unit
 ) {
-    val buttonColor = MaterialTheme.colors.secondary
-    val shadow = Color.Black.copy(.5f)
-    val painter = rememberVectorPainter(image = item.icon)
-    Canvas(
+    Row(
         modifier = Modifier
-            .size(32.dp)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                onClick = {
-                    onMinFabItemClick.invoke(item)
-                },
-                indication = rememberRipple(
-                    bounded = false,
-                    radius = 20.dp,
-                    color = MaterialTheme.colors.onSurface
-                )
-            ),
+            .wrapContentSize()
+            .padding(end = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        drawCircle(
-            color = shadow,
-            radius = fabScale,
-            center = Offset(
-                center.x + 2f,
-                center.y + 2f,
+        if (fabOption.showLabel) {
+            Text(
+                text = item.label,
+                style = MaterialTheme.typography.h6,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.surface)
+                    .padding(horizontal = 6.dp, vertical = 4.dp)
             )
-        )
+        }
 
-        drawCircle(
-            color = buttonColor,
-            radius = fabScale
-        )
-
-//        scale(
-//            Offset(
-//                center.x - (item.icon.width / 2),
-//                center.y - (item.icon.width / 2),
-//            )
-//        ) {
-//            with(painter) {
-//                draw(painter.intrinsicSize)
-//            }
-//
-//        }
-
-
-
-
-//        drawImage(
-//            image = item.icon,
-//            topLeft = Offset(
-//                center.x - (item.icon.width / 2),
-//                center.y - (item.icon.width / 2),
-//            ),
-//            alpha = alpha
-//        )
+        FloatingActionButton(
+            onClick = {
+                onFabItemClicked(item)
+            },
+            modifier = Modifier.size(40.dp),
+            backgroundColor = fabOption.backgroundTint,
+            contentColor = fabOption.iconTint
+        ) {
+            Icon(
+                painter = painterResource(id = item.iconRes),
+                contentDescription = item.label,
+                tint = fabOption.iconTint
+            )
+        }
     }
 }
 
@@ -316,12 +344,15 @@ fun BottomBar() {
         mutableStateOf("Home")
     }
 
+    val context = LocalContext.current
+
     BottomNavigation() {
         bottomMenuItemsList.forEach() { menuItem ->
             BottomNavigationItem(
                 selected = (selectedItem == menuItem.label),
                 onClick = {
                     selectedItem = menuItem.label
+                    //Toast.makeText(context, menuItem.label, Toast.LENGTH_LONG).show()
                 },
                 icon = {
                     Icon(
