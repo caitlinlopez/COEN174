@@ -1,26 +1,24 @@
 # Fridge Tracker: How to Build & Run
 
-1) Install Android Studio
-https://developer.android.com/studio
+1) Install [Android Studio](https://developer.android.com/studio)
 
 2) Open the application and navigate to the device manager
 
-3) Press the "Create device" button and select the Pixel 5 to install the emulated device
+3) Press the ```"Create device"``` button and select the ```Pixel 5``` to install the emulated device
 
-4) Select "R" for system image and press finish
+4) Select ```"R"``` for system image and press finish
 
-5) If you don't already have GitHub Desktop, install the app
-https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop
+5) If you don't already have GitHub Desktop, install the [app](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
-6) Clone this repository with URL: "caitlinlopez/COEN174"
+6) Clone this repository: ```git clone https://github.com/caitlinlopez/COEN174/```
 
 7) Link your GitHub account to Android Studio and open the project
 
-8) Press "Build" and then "Make Project", this prepares the project to be run on the virtual Android device and may take a few minutes to complete
+8) Press ```"Build"``` and then ```"Make Project"```, this prepares the project to be run on the virtual Android device and may take a few minutes to complete
 
 9) Open the Device Manager and press the play button for the Pixel 5
 
-10) Press "Run" and then "Run 'app'"
+10) Press ```"Run"``` and then ```"Run 'app'"```
 
 
 # Unit Testing & Infrastructure
@@ -40,7 +38,7 @@ The ```"Couldn’t Delete"``` error can occur when trying to delete a file or fo
 
 1) Close Android Studio and try deleting the file/folder again: Sometimes the file/folder may be locked or in use by Android Studio itself, so closing the program and trying to delete the file/folder again may help. 
 
-2) Run ```taskkill /im java.exe``` /f in your Android Studio command line terminal
+2) Run ```taskkill /im java.exe /f``` in your Android Studio command line terminal
 
 3) Restart your computer: If the file/folder is still locked, restarting your computer may help release any processes that are using it. 
 
