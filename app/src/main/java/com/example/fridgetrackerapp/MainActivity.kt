@@ -438,7 +438,7 @@ fun saveDataToExternalStorage(context: Context, msg: String) {
             // and adding padding to it and filling max width
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth().testTag("wordField"),
             // on below line we are adding text style
             // specifying color and font size to it.
             textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
