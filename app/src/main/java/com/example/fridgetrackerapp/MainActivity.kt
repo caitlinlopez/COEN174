@@ -137,14 +137,13 @@ fun FabIcon(@DrawableRes iconRes: Int, iconRotate: Float? = null): FabIcon =
     FabIconImpl(iconRes, iconRotate)
 
 
-
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun FridgeTrackerApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val contextForToast = LocalContext.current.applicationContext
+    val contextForToast = LocalContext.current
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -165,12 +164,12 @@ fun FridgeTrackerApp() {
                     MultiFabItem(
                         id = 1,
                         iconRes = R.drawable.ic_pencil,
-                        label = "Enter Manually",
+                        label = "Enter Manually"
                     ),
                     MultiFabItem(
                         id = 2,
                         iconRes = R.drawable.ic_camera,
-                        label = "Scan Barcode",
+                        label = "Scan Barcode"
                     ),
                 ),
                 fabIcon = FabIcon(iconRes = R.drawable.ic_baseline_add_24, iconRotate = 45f),
