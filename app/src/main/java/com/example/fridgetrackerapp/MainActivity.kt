@@ -134,7 +134,7 @@ fun FabIcon(@DrawableRes iconRes: Int, iconRotate: Float? = null): FabIcon =
 fun FridgeTrackerApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val contextForToast = LocalContext.current.applicationContext
+    val contextForToast = LocalContext.current
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -165,7 +165,7 @@ fun FridgeTrackerApp() {
                 ),
                 fabIcon = FabIcon(iconRes = R.drawable.ic_baseline_add_24, iconRotate = 45f),
                 onFabItemClicked = {
-                    Toast.makeText(contextForToast, it.label, Toast.LENGTH_LONG).show()
+
                 },
                 fabOption = FabOption(
                     iconTint = Color.White,

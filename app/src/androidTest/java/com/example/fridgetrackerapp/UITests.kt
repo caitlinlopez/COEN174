@@ -57,6 +57,30 @@ class UITests {
     }
 
     @Test
+    fun formButtonTest() {
+        composeTestRule.setContent {
+            FridgeTrackerAppTheme {
+                FridgeTrackerApp()
+            }
+        }
+        composeTestRule.onNodeWithContentDescription("FAB").performClick()
+        composeTestRule.onNodeWithContentDescription("Enter Manually").performClick()
+        // no functionality yet
+    }
+
+    @Test
+    fun scannerButtonTest() {
+        composeTestRule.setContent {
+            FridgeTrackerAppTheme {
+                FridgeTrackerApp()
+            }
+        }
+        composeTestRule.onNodeWithContentDescription("FAB").performClick()
+        composeTestRule.onNodeWithContentDescription("Scan Barcode").performClick()
+        // no functionality yet
+    }
+
+    @Test
     fun closeFABTest() {
         composeTestRule.setContent {
             FridgeTrackerAppTheme {
