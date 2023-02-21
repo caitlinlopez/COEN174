@@ -414,7 +414,7 @@ fun saveDataToExternalStorage(context: Context, msg: String) {
             text = "Internal Storage in Android",
             // on below line we are specifying text color,
             // font size and font weight
-            color = Color.Green,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -484,7 +484,7 @@ fun saveDataToExternalStorage(context: Context, msg: String) {
             text = "Data will appear below : \n" + txtMsg.value,
             // on below line we are specifying text color,
             // font size and font weight
-            color = Color.Green,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
