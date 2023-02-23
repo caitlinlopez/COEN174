@@ -7,7 +7,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+<<<<<<< Updated upstream
+=======
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.fillMaxSize
+>>>>>>> Stashed changes
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Menu
@@ -22,6 +29,17 @@ import androidx.compose.ui.unit.dp
 import com.example.fridgetrackerapp.ui.theme.FridgeTrackerAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+<<<<<<< Updated upstream
+=======
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import com.example.fridgetrackerapp.presentation.MainScreen
+import dagger.hilt.android.AndroidEntryPoint
+
+val showStorageTest: MutableState<Boolean> = mutableStateOf(false)
+val barcodeScreen: MutableState<Boolean> = mutableStateOf(false)
+>>>>>>> Stashed changes
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +82,38 @@ fun FridgeTrackerApp() {
             BottomBar()
         },
         floatingActionButton = {
+<<<<<<< Updated upstream
             FAB()
+=======
+            MultiFloatingActionButton(
+                items = listOf(
+                    MultiFabItem(
+                        id = 1,
+                        iconRes = R.drawable.ic_pencil,
+                        label = "Enter Manually"
+                    ),
+                    MultiFabItem(
+                        id = 2,
+                        iconRes = R.drawable.ic_camera,
+                        label = "Scan Barcode"
+                    ),
+                ),
+                fabIcon = FabIcon(iconRes = R.drawable.ic_baseline_add_24, iconRotate = 45f),
+                onFabItemClicked = {
+                    Toast.makeText(contextForToast, it.label, Toast.LENGTH_LONG).show()
+                    if (it.label == "Enter Manually") {
+                        Log.d("TAG", "label correct")
+                        showStorageTest.value = true
+                    } else {
+                        barcodeScreen.value = true
+                    }
+                },
+                fabOption = FabOption(
+                    iconTint = Color.White,
+                    showLabel = true
+                )
+            )
+>>>>>>> Stashed changes
         },
         drawerContent = {
             NavDrawer(
@@ -75,6 +124,9 @@ fun FridgeTrackerApp() {
         drawerGesturesEnabled = true,
     ) {
 
+    }
+    if (barcodeScreen.value) {
+        MainScreen()
     }
 }
 
