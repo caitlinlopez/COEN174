@@ -55,6 +55,7 @@ import kotlinx.coroutines.launch
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import com.example.fridgetrackerapp.Card
 
 val showStorageTest: MutableState<Boolean> = mutableStateOf(false)
 
@@ -144,6 +145,8 @@ fun FridgeTrackerApp() {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val contextForToast = LocalContext.current
+
+
 
     Scaffold(
         scaffoldState = scaffoldState,
