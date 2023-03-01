@@ -117,7 +117,7 @@ fun ItemCard(
                         stringResource(id = card.stringResourceId),
                         style = MaterialTheme.typography.h6,
                         color = Color.White,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         textAlign = TextAlign.Start
                     )
                     Column(
