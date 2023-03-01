@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -114,7 +115,9 @@ fun ItemCard(
                 ) {
                     Text(
                         stringResource(id = card.stringResourceId),
-                        style = TextStyle(color = Color.White, fontSize = 20.sp),
+                        style = MaterialTheme.typography.h6,
+                        color = Color.White,
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Start
                     )
                     Column(
@@ -125,19 +128,17 @@ fun ItemCard(
                     ) {
                         Text(
                             (card.expiration.format(dateFormatter)).toString(),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.End
-                            )
+                            style = MaterialTheme.typography.h6,
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.End
                         )
                         Text(
                             "Qty: " + card.quantity.toString(),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.End
-                            )
+                            style = MaterialTheme.typography.h6,
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            textAlign = TextAlign.End
                         )
                     }
 
@@ -147,6 +148,7 @@ fun ItemCard(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ItemCardList(cardList: List<ItemCardData>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
