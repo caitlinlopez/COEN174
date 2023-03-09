@@ -1,7 +1,14 @@
 package com.example.fridgetrackerapp
 
 import android.annotation.SuppressLint
+<<<<<<< Updated upstream
+=======
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+>>>>>>> Stashed changes
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -26,6 +33,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+<<<<<<< Updated upstream
+=======
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.fridgetrackerapp.databinding.ActivityMainBinding
+>>>>>>> Stashed changes
 import com.example.fridgetrackerapp.ui.theme.FridgeTrackerAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -42,11 +55,33 @@ val barcodeScreen: MutableState<Boolean> = mutableStateOf(false)
 >>>>>>> Stashed changes
 
 class MainActivity : ComponentActivity() {
+
+    companion object{
+        const val RESULT = "RESULT"
+    }
+
+    private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContent {
             FridgeTrackerAppTheme {
                 FridgeTrackerApp()
+            }
+        }
+        binding.btnScan.setOnClickListener{
+            val intent = Intent(applicationContext, ScanActivity::class.java)
+            startActivity(intent)
+        }
+
+        val result = intent.getStringExtra(RESULT)
+
+        if(result != null) {
+            if (result.contains("https://") || result.contains("http://")) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result))
+                startActivity(intent)
+            } else {
+                binding.result.text = result.toString()
             }
         }
     }
@@ -104,6 +139,8 @@ fun FridgeTrackerApp() {
                     if (it.label == "Enter Manually") {
                         Log.d("TAG", "label correct")
                         showStorageTest.value = true
+                    } else if(it.label == "Scan Barcode"){
+
                     } else {
                         barcodeScreen.value = true
                     }

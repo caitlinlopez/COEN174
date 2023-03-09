@@ -37,6 +37,7 @@ android {
     }
     buildFeatures {
         compose true
+        viewBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.2.0'
@@ -56,7 +57,12 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation 'androidx.compose.material:material:1.2.0'
+<<<<<<< Updated upstream
     testImplementation 'junit:junit:4.13.2'
+=======
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    testImplementation "junit:junit:4.12"
+>>>>>>> Stashed changes
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
@@ -66,6 +72,7 @@ dependencies {
 =======
     androidTestImplementation "androidx.test:rules:1.2.0"
 
+<<<<<<< Updated upstream
     // Coroutine Lifecycle Scopes
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
@@ -78,5 +85,9 @@ dependencies {
     //bar code scanner
     implementation 'com.google.android.gms:play-services-code-scanner:16.0.0-beta3'
 
+>>>>>>> Stashed changes
+=======
+    //barcode
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 >>>>>>> Stashed changes
 }
