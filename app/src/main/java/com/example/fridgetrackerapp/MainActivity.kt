@@ -1,12 +1,9 @@
 package com.example.fridgetrackerapp
 
 import android.annotation.SuppressLint
-<<<<<<< Updated upstream
-=======
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
->>>>>>> Stashed changes
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -14,11 +11,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-<<<<<<< Updated upstream
-=======
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.fillMaxSize
->>>>>>> Stashed changes
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -33,17 +27,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-<<<<<<< Updated upstream
-=======
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.fridgetrackerapp.databinding.ActivityMainBinding
->>>>>>> Stashed changes
 import com.example.fridgetrackerapp.ui.theme.FridgeTrackerAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-<<<<<<< Updated upstream
-=======
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -52,7 +41,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 val showStorageTest: MutableState<Boolean> = mutableStateOf(false)
 val barcodeScreen: MutableState<Boolean> = mutableStateOf(false)
->>>>>>> Stashed changes
 
 class MainActivity : ComponentActivity() {
 
@@ -117,9 +105,7 @@ fun FridgeTrackerApp() {
             BottomBar()
         },
         floatingActionButton = {
-<<<<<<< Updated upstream
             FAB()
-=======
             MultiFloatingActionButton(
                 items = listOf(
                     MultiFabItem(
@@ -150,7 +136,6 @@ fun FridgeTrackerApp() {
                     showLabel = true
                 )
             )
->>>>>>> Stashed changes
         },
         drawerContent = {
             NavDrawer(
