@@ -298,6 +298,7 @@ fun MultiFloatingActionButton(
             onClick = {
                 fabState.value = fabState.value.toggleValue()
                 stateChanged(fabState.value)
+                //insert screen here
             },
             backgroundColor = fabOption.backgroundTint,
             contentColor = fabOption.iconTint
